@@ -123,8 +123,8 @@
 				ACC6C1AD22CAE4FF007F9D74 /* VRVideoView.swift */,
 				AC6EA37322CB62D3004B0C10 /* RotationMode.swift */,
 				ACD8DF9322CE265800B47CCE /* FullScreenButton.swift */,
-				AC6EA39D22CB7063004B0C10 /* Supporting Files */,
 				ACD8DF9522CE2A2A00B47CCE /* FullScreenButton+Extension.swift */,
+				AC6EA39D22CB7063004B0C10 /* Supporting Files */,
 			);
 			path = VRVideoPlayer;
 			sourceTree = "<group>";
