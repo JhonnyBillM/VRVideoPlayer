@@ -13,6 +13,10 @@ import UIKit
 
     /// View to present the button on top of.
     @objc weak var view: UIView?
+    private var appearance: Appearance = .light
+    private var background: Background = .vibrant
+    private var hPosition: HPosition = .left
+    private var vPosition: VPosition = .top
     
     /// Full screen action.
     /// This closure gets called when the button gets touched (when firing `.touchUpInside` event).
