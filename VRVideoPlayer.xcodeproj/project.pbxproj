@@ -14,6 +14,7 @@
 		ACC6C1A222CAE08F007F9D74 /* VRVideoPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC6C1A122CAE08F007F9D74 /* VRVideoPlayerTests.swift */; };
 		ACC6C1A422CAE08F007F9D74 /* VRVideoPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = ACC6C19622CAE08F007F9D74 /* VRVideoPlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ACC6C1AE22CAE4FF007F9D74 /* VRVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC6C1AD22CAE4FF007F9D74 /* VRVideoView.swift */; };
+		ACD8DF9422CE265800B47CCE /* FullScreenButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD8DF9322CE265800B47CCE /* FullScreenButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +40,7 @@
 		ACC6C1A122CAE08F007F9D74 /* VRVideoPlayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRVideoPlayerTests.swift; sourceTree = "<group>"; };
 		ACC6C1A322CAE08F007F9D74 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ACC6C1AD22CAE4FF007F9D74 /* VRVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VRVideoView.swift; sourceTree = "<group>"; };
+		ACD8DF9322CE265800B47CCE /* FullScreenButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenButton.swift; sourceTree = "<group>"; };
 		EAB00AB61C7018B8021C7F15 /* Pods-VRVideoPlayer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VRVideoPlayer.debug.xcconfig"; path = "Pods/Target Support Files/Pods-VRVideoPlayer/Pods-VRVideoPlayer.debug.xcconfig"; sourceTree = "<group>"; };
 		ECF5C975EA064CD33E65706F /* Pods-VRVideoPlayer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VRVideoPlayer.release.xcconfig"; path = "Pods/Target Support Files/Pods-VRVideoPlayer/Pods-VRVideoPlayer.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -118,6 +120,7 @@
 			children = (
 				ACC6C1AD22CAE4FF007F9D74 /* VRVideoView.swift */,
 				AC6EA37322CB62D3004B0C10 /* RotationMode.swift */,
+				ACD8DF9322CE265800B47CCE /* FullScreenButton.swift */,
 				AC6EA39D22CB7063004B0C10 /* Supporting Files */,
 			);
 			path = VRVideoPlayer;
@@ -313,6 +316,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ACD8DF9422CE265800B47CCE /* FullScreenButton.swift in Sources */,
 				AC6EA37422CB62D3004B0C10 /* RotationMode.swift in Sources */,
 				ACC6C1AE22CAE4FF007F9D74 /* VRVideoView.swift in Sources */,
 			);
