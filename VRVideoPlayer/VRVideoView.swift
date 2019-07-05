@@ -8,6 +8,7 @@
 
 import Foundation
 import AVFoundation
+import UIKit
 import Swifty360Player
 
 /// Displays a video in 360º, uses device motion and gestures recognizers to nagivate throughout the video.
@@ -16,6 +17,7 @@ import Swifty360Player
     fileprivate var swifty360ViewController: Swifty360ViewController?
     fileprivate var customVideoURL: URL? = nil
     fileprivate var autoplay: Bool = false
+    fileprivate var showFullScreenButton: Bool = true
     fileprivate var videoFrame: CGRect = .zero
     fileprivate(set) var videoPlayer: AVPlayer?
     
@@ -25,11 +27,12 @@ import Swifty360Player
     ///   - url: video URL to display in the view.
     ///   - frame: display position and size to display the video in.
     ///   - autoPlay: determines whether or not the video should start playing automatically. Defaults to `true`.
-    @objc public init(show url: URL, in frame: CGRect, autoPlay: Bool = true) {
+    @objc public init(show url: URL, in frame: CGRect, autoPlay: Bool = true, showFullScreenButton: Bool = true) {
         super.init(nibName: nil, bundle: nil)
         self.customVideoURL = url
         self.videoFrame = frame
         self.autoplay = autoPlay
+        self.showFullScreenButton = showFullScreenButton
         self.view.frame = frame
     }
     
@@ -58,6 +61,10 @@ import Swifty360Player
                                                           motionManager: motionManager)
         
         if let swifty360ViewController = swifty360ViewController {
+            if showFullScreenButton {
+                addDefaultFullScreenButton(on: swifty360ViewController.view)
+            }
+            
             addChild(swifty360ViewController)
             view.addSubview(swifty360ViewController.view)
             swifty360ViewController.didMove(toParent: self)
@@ -66,6 +73,42 @@ import Swifty360Player
         if autoplay {
             videoPlayer.play()
         }
+    }
+    
+    @objc private func addDefaultFullScreenButton(on view: UIView) {
+        var isFullScreen = false
+        _ = FullScreenButton(view: view, handler: { _ in
+            if isFullScreen {
+                self.undoFullScreen(animated: true, duration: 0.3)
+            } else {
+                self.fullScreen(animated: true, duration: 0.3)
+            }
+            isFullScreen.toggle()
+        })
+    }
+    
+    // FIXME: test + fix this function. Right now must be called after this view controller appears
+    //        and some custom constraints are not working propertly.
+    // TODO: expose this interface when issues are solved.
+    @objc private func addFullScreenButton(
+        appearance: FullScreenButton.Appearance = .dark,
+        background: FullScreenButton.Background = .vibrant,
+        hPosition: FullScreenButton.HPosition = .left,
+        vPosition: FullScreenButton.VPosition = .top,
+        isFullScreen: Bool = false) {
+        
+        guard let _view = swifty360ViewController?.view else { return }
+        var _isFullScreen = isFullScreen
+        _ = FullScreenButton(view: _view, handler: { (_) in
+            if _isFullScreen {
+                self.undoFullScreen(animated: true, duration: 0.3)
+            } else {
+                self.fullScreen(animated: true, duration: 0.3)
+            }
+            _isFullScreen.toggle()
+        }, appearance: appearance, background: background, hPosition: hPosition, vPosition: vPosition)
+        _view.layoutIfNeeded()
+        _view.setNeedsDisplay()
     }
     
     // MARK: - Convenience methods.
