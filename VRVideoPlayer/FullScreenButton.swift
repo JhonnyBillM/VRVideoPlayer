@@ -91,29 +91,17 @@ import UIKit
                 bottomAnchor.constraint(equalTo: _view.layoutMarginsGuide.bottomAnchor/*_view.bottomAnchor*/, constant: 15).isActive = true
             }
         }
+
+        // Configure button icon and blur based on appearance.
+        set(mode: .normal)
         
-        // Set appearance.
         var effect: UIBlurEffect
-        switch appearance {
-        case .dark:
-            let bundle = Bundle(for: type(of: self))
-            let image = UIImage(named: "full_screen_light_icon", in: bundle, compatibleWith: nil)
-            setImage(image, for: .normal)
-            imageView?.contentMode = .scaleAspectFit
-            
-            tintColor = .white
-            setTitleColor(.white, for: .normal)
+        if case .dark = appearance {
             effect = .init(style: .dark)
-        case .light:
-            let bundle = Bundle(for: type(of: self))
-            let image = UIImage(named: "full_screen_dark_icon", in: bundle, compatibleWith: nil)
-            setImage(image, for: .normal)
-            imageView?.contentMode = .scaleAspectFit
-            
-            tintColor = .black
-            setTitleColor(.black, for: .normal)
+        } else {
             effect = .init(style: .light)
         }
+        
         imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
 
         // Set background color and blur.
