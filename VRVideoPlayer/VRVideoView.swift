@@ -150,9 +150,14 @@ import Swifty360Player
     ///
     /// - Parameter url: new url to update from.
     @objc public func update(url: URL) {
-        stop()
         customVideoURL = url
-        viewWillAppear(false)
+        
+        let item = AVPlayerItem(url: url)
+        videoPlayer?.replaceCurrentItem(with: item)
+        
+        if autoplay {
+            videoPlayer?.play()
+        }
     }
     
     /// Pause and set to `nil` the current video player.
