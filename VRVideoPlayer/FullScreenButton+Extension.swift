@@ -31,4 +31,9 @@ import Foundation
         case top = 0
         case bottom = 1
     }
+    
+    @objc public enum Mode: Int {
+        case fullScreen
+        case normal
+    }
 }
