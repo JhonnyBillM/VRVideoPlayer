@@ -157,8 +157,7 @@ import Swifty360Player
     
     /// Pause and set to `nil` the current video player.
     @objc public func stop() {
-        videoPlayer?.pause()
-        videoPlayer = nil
+        videoPlayer?.replaceCurrentItem(with: nil)
     }
     
     /// Equivalent to "reloading" this view.
