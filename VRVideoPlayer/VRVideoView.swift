@@ -169,7 +169,11 @@ import Swifty360Player
     ///
     /// Call this method if you'd like to "resume" a video that has been stopped using the `.stop()` method.
     @objc public func startOver() {
-        viewWillAppear(false)
+        guard let url = customVideoURL else { return }
+        videoPlayer?.replaceCurrentItem(with: AVPlayerItem(url: url))
+        if autoplay {
+            videoPlayer?.play()
+        }
     }
     
     /// Sets the current video frame to fill the screen bounds.
