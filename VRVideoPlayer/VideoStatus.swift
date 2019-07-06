@@ -7,3 +7,9 @@
 //
 
 import Foundation
+
+@objc public enum VideoStatus: Int {
+    case loading
+    case readyToPlay
+    case failed
+}
