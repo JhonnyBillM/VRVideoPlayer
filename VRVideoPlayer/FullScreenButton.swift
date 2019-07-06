@@ -96,16 +96,28 @@ import UIKit
         var effect: UIBlurEffect
         switch appearance {
         case .dark:
-            setTitle("DARK", for: .normal)
+            let bundle = Bundle(for: type(of: self))
+            let image = UIImage(named: "full_screen_light_icon", in: bundle, compatibleWith: nil)
+            setImage(image, for: .normal)
+            imageView?.contentMode = .scaleAspectFit
+            
+            tintColor = .white
             setTitleColor(.white, for: .normal)
             effect = .init(style: .dark)
         case .light:
-            setTitle("LIGHT", for: .normal)
+            let bundle = Bundle(for: type(of: self))
+            let image = UIImage(named: "full_screen_dark_icon", in: bundle, compatibleWith: nil)
+            setImage(image, for: .normal)
+            imageView?.contentMode = .scaleAspectFit
+            
+            tintColor = .black
             setTitleColor(.black, for: .normal)
             effect = .init(style: .light)
         }
-        
-        // Set background blur.
+        imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+
+        // Set background color and blur.
+        backgroundColor = .clear
         let blur = UIVisualEffectView(effect: effect)
         blur.translatesAutoresizingMaskIntoConstraints = true
         
@@ -128,6 +140,7 @@ import UIKit
         blur.widthAnchor.constraint(equalToConstant: 60).isActive = true
         blur.heightAnchor.constraint(equalToConstant: 40).isActive = true
         addSubview(blur)
+        sendSubviewToBack(blur)
         
         NSLayoutConstraint.activate([
             blur.topAnchor.constraint(equalTo: topAnchor, constant: 0),
