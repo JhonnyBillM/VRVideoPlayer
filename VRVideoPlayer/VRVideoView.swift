@@ -146,18 +146,60 @@ import Swifty360Player
         }
     }
     
-    /// Updates the given URL and "rebuils" the current view.
+    /// Updates the player with the given URL.
     ///
-    /// - Parameter url: new url to update from.
+    /// If this method gets called with the same URL that is currently playing,
+    /// it just `refresh` the video playback.
+    ///
+    /// ## Refreshing policy
+    /// This method assumes your video is a live-streaming, that means when updating it, we try to play to the most up-to-date video playback time.
+    ///
+    /// Remember, this policy only applies when you pass the same URL that is currently playing. If you pass a new URL, this method
+    /// just loads and play as it's supposed to do.
+    ///
+    /// - note: This method follows the `autoPlay` policy dictated at initialization time.
+    ///
+    /// - Parameters:
+    ///   - url: new url to update from.
     @objc public func update(url: URL) {
+        update(url: url, isStreaming: true)
+    }
+
+    /// Updates the player with the given URL.
+    ///
+    /// If this method gets called with the same URL that is currently playing,
+    /// it just `refresh` the video playback.
+    ///
+    /// ## Refreshing policy
+    /// By `refresh` we mean that if the `isStreaming` property is true, it plays from the most up-to-date video playback time.
+    /// Otherwise, if `isStreaming` is false, the player starts playing the video from the beginning.
+    ///
+    /// Remember, this policy only applies when you pass the same URL that is currently playing. If you pass a new URL, this method
+    /// just loads and play as it's supposed to do.
+    ///
+    /// - note: This method follows the `autoPlay` policy dictated at initialization time.
+    ///
+    /// - Parameters:
+    ///   - url: new url to update from.
+    ///   - isStreaming: if true, refresh the video from the most up-to-date playback time, otherwise, plays from the beginning.
+    @objc public func update(url: URL, isStreaming: Bool = true) {
+        defer {
+            if autoplay {
+                videoPlayer?.play()
+            }
+        }
+        
+        /// If we get the same URL, do not create a new one,
+        /// just make it seek the appropiate playback time.
+        guard customVideoURL != url else {
+            videoPlayer?.seek(to: isStreaming ? .positiveInfinity : .zero)
+            return
+        }
+        
         customVideoURL = url
         
         let item = AVPlayerItem(url: url)
         videoPlayer?.replaceCurrentItem(with: item)
-        
-        if autoplay {
-            videoPlayer?.play()
-        }
     }
     
     /// Pause and set to `nil` the current video player.
@@ -165,15 +207,47 @@ import Swifty360Player
         videoPlayer?.replaceCurrentItem(with: nil)
     }
     
-    /// Equivalent to "reloading" this view.
+    /// Starts over the current playing video.
     ///
-    /// Call this method if you'd like to "resume" a video that has been stopped using the `.stop()` method.
+    /// Call this method after you stopped a video and want to play it again. [i.e. after calling the `.stop()` method.]
+    ///
+    /// If you call this method and there's a playing video, we apply the following policy:
+    /// ## Refreshing policy
+    /// This method assumes your video is a live-streaming, that means when updating it, we try to play to the most up-to-date video playback time.
+    ///
+    /// - note: This method follows the `autoPlay` policy dictated at initialization time.
     @objc public func startOver() {
+        startOver(streaming: true)
+    }
+    
+    /// Starts over the current playing video.
+    ///
+    /// Call this method after you stopped a video and want to play it again. [i.e. after calling the `.stop()` method.]
+    ///
+    /// If you call this method and there's a playing video, we apply the following policy:
+    /// ## Refreshing policy
+    /// By `refresh` we mean that if the `streaming` property is true, it plays from the most up-to-date video playback time.
+    /// Otherwise, if `isStreaming` is false, the player starts playing the video from the beginning.
+    ///
+    /// - note: This method follows the `autoPlay` policy dictated at initialization time.
+    @objc public func startOver(streaming: Bool = true) {
+        defer {
+            if autoplay {
+                videoPlayer?.play()
+            }
+        }
+        
+        /// If there's already an item, do not create a new one,
+        /// just make it seek the up-to-date stream.
+        /// - warning: this only works for live streamming videos; to support normal videos,
+        ///            we need to seek `.zero`.
+        guard videoPlayer?.currentItem == nil else {
+            videoPlayer?.seek(to: streaming ? .positiveInfinity : .zero)
+            return
+        }
+        
         guard let url = customVideoURL else { return }
         videoPlayer?.replaceCurrentItem(with: AVPlayerItem(url: url))
-        if autoplay {
-            videoPlayer?.play()
-        }
     }
     
     /// Sets the current video frame to fill the screen bounds.
