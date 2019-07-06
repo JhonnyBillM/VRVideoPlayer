@@ -202,7 +202,9 @@ import Swifty360Player
         videoPlayer?.replaceCurrentItem(with: item)
     }
     
-    /// Pause and set to `nil` the current video player.
+    /// Invalidates the current playing video. Basically this throw away the video it was playing.
+    ///
+    /// To continue playing the same video you stopped, call `.startOver()` or `.startOver(streaming:)` methods.
     @objc public func stop() {
         videoPlayer?.replaceCurrentItem(with: nil)
     }
