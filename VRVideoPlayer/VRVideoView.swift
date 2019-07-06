@@ -21,6 +21,11 @@ import Swifty360Player
     fileprivate var videoFrame: CGRect = .zero
     fileprivate(set) var videoPlayer: AVPlayer?
     
+    public var delegate: VRVideoViewDelegate?
+    
+    // Key-value observing context
+    fileprivate var playerItemContext = 0
+    
     // fileprivate var videoPlayerViewCenter: CGPoint = .zero
     
     /// Creates a VRVideoView object to display a video in 360º with the provided information.
@@ -56,7 +61,17 @@ import Swifty360Player
 
         guard let url = customVideoURL else { return }
         videoPlayer = AVPlayer(url: url)
+        
+        delegate?.loadingVideo()
+        delegate?.videoStatusChangedTo(status: .loading)
+        
         guard let videoPlayer = videoPlayer else { return }
+        
+        // Register as an observer of the player item's status property.
+        videoPlayer.currentItem?.addObserver(self,
+                                             forKeyPath: #keyPath(AVPlayerItem.status),
+                                             options: [.old, .new],
+                                             context: &playerItemContext)
         
         let motionManager = Swifty360MotionManager.shared
         swifty360ViewController = Swifty360ViewController(withAVPlayer: videoPlayer,
@@ -199,6 +214,16 @@ import Swifty360Player
         customVideoURL = url
         
         let item = AVPlayerItem(url: url)
+
+        delegate?.loadingVideo()
+        delegate?.videoStatusChangedTo(status: .loading)
+        
+        // Register as an observer of the player item's status property.
+        item.addObserver(self,
+                         forKeyPath: #keyPath(AVPlayerItem.status),
+                         options: [.old, .new],
+                         context: &playerItemContext)
+        
         videoPlayer?.replaceCurrentItem(with: item)
     }
     
@@ -249,7 +274,17 @@ import Swifty360Player
         }
         
         guard let url = customVideoURL else { return }
-        videoPlayer?.replaceCurrentItem(with: AVPlayerItem(url: url))
+        let item = AVPlayerItem(url: url)
+        
+        delegate?.loadingVideo()
+        delegate?.videoStatusChangedTo(status: .loading)
+        
+        // Register as an observer of the player item's status property.
+        item.addObserver(self,
+                         forKeyPath: #keyPath(AVPlayerItem.status),
+                         options: [.old, .new],
+                         context: &playerItemContext)
+        videoPlayer?.replaceCurrentItem(with: item)
     }
     
     /// Sets the current video frame to fill the screen bounds.
@@ -310,6 +345,54 @@ import Swifty360Player
             return (180 * .pi) / 180
         case .up:
             return (360 * .pi) / 180
+        }
+    }
+}
+
+// MARK: - Observer
+@objc extension VRVideoView {
+    public override func observeValue(
+        forKeyPath keyPath: String?,
+        of object: Any?,
+        change: [NSKeyValueChangeKey : Any]?,
+        context: UnsafeMutableRawPointer?) {
+        
+        guard context == &playerItemContext else {
+            super.observeValue(forKeyPath: keyPath,
+                               of: object,
+                               change: change,
+                               context: context)
+            return
+        }
+        
+        if keyPath == #keyPath(AVPlayer.status) {
+            let status: AVPlayerItem.Status?
+            if let statusNumber = change?[.newKey] as? NSNumber {
+                status = AVPlayerItem.Status(rawValue: statusNumber.intValue)
+            } else {
+                status = .unknown
+            }
+            
+            guard let _status = status else {
+                delegate?.failedToLoadVideo()
+                delegate?.videoStatusChangedTo(status: .failed)
+                return
+            }
+            
+            switch _status {
+            case .readyToPlay:
+                delegate?.readyToPlayVideo()
+                delegate?.videoStatusChangedTo(status: .readyToPlay)
+            case .failed:
+                delegate?.failedToLoadVideo()
+                delegate?.videoStatusChangedTo(status: .failed)
+            case .unknown:
+                delegate?.loadingVideo()
+                delegate?.videoStatusChangedTo(status: .loading)
+            @unknown default:
+                delegate?.failedToLoadVideo()
+                delegate?.videoStatusChangedTo(status: .failed)
+            }
         }
     }
 }
