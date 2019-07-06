@@ -149,4 +149,59 @@ import UIKit
             blur.rightAnchor.constraint(equalTo: rightAnchor, constant: 0),
             ])
     }
+    
+    /// Tell the button what's it's current state or mode.
+    ///
+    /// This method configure the button icons based on it's mode.
+    ///
+    /// - Parameter mode: determines the current button mode, `fullScreen` or `normal`.
+    @objc public func set(mode: Mode) {
+        if case .fullScreen = mode {
+            setCloseIcon()
+        } else {
+            setExpandIcon()
+        }
+    }
+    
+    @objc private func setCloseIcon() {
+        switch appearance {
+        case .dark:
+            let bundle = Bundle(for: type(of: self))
+            let image = UIImage(named: "cancel_music_light_icon", in: bundle, compatibleWith: nil)
+            setImage(image, for: .normal)
+            imageView?.contentMode = .scaleAspectFit
+            
+            tintColor = .white
+            setTitleColor(.white, for: .normal)
+        case .light:
+            let bundle = Bundle(for: type(of: self))
+            let image = UIImage(named: "cancel_music_dark_icon", in: bundle, compatibleWith: nil)
+            setImage(image, for: .normal)
+            imageView?.contentMode = .scaleAspectFit
+            
+            tintColor = .black
+            setTitleColor(.black, for: .normal)
+        }
+    }
+    
+    @objc private func setExpandIcon() {
+        switch appearance {
+        case .dark:
+            let bundle = Bundle(for: type(of: self))
+            let image = UIImage(named: "full_screen_light_icon", in: bundle, compatibleWith: nil)
+            setImage(image, for: .normal)
+            imageView?.contentMode = .scaleAspectFit
+            
+            tintColor = .white
+            setTitleColor(.white, for: .normal)
+        case .light:
+            let bundle = Bundle(for: type(of: self))
+            let image = UIImage(named: "full_screen_dark_icon", in: bundle, compatibleWith: nil)
+            setImage(image, for: .normal)
+            imageView?.contentMode = .scaleAspectFit
+            
+            tintColor = .black
+            setTitleColor(.black, for: .normal)
+        }
+    }
 }
