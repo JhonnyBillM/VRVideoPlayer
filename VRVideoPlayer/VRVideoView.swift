@@ -94,11 +94,13 @@ import Swifty360Player
     
     @objc private func addDefaultFullScreenButton(on view: UIView) {
         var isFullScreen = false
-        _ = FullScreenButton(view: view, handler: { _ in
+        _ = FullScreenButton(view: view, handler: { kkc in
             if isFullScreen {
                 self.undoFullScreen(animated: true, duration: 0.3)
+                kkc.set(mode: .normal)
             } else {
                 self.fullScreen(animated: true, duration: 0.3)
+                kkc.set(mode: .fullScreen)
             }
             isFullScreen.toggle()
         })
