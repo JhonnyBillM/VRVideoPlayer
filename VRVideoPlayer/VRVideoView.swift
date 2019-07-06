@@ -21,6 +21,8 @@ import Swifty360Player
     fileprivate var videoFrame: CGRect = .zero
     fileprivate(set) var videoPlayer: AVPlayer?
     
+    // fileprivate var videoPlayerViewCenter: CGPoint = .zero
+    
     /// Creates a VRVideoView object to display a video in 360º with the provided information.
     ///
     /// - Parameters:
@@ -173,11 +175,20 @@ import Swifty360Player
     ///   - duration: Total duration of the animations, measured in seconds.
     ///               When `animated` is false, this value defaults to 0.0.
     @objc public func fullScreen(animated: Bool, duration: Double) {
-        let _duration = animated ? duration : 0.0
-        UIView.animate(withDuration: _duration) {
+        UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            // TODO: explore other ways (such as scaling) to perform this fullScreen in a
+            //       more fluent way.
+            
+            // self.videoPlayerViewCenter = self.view.center
             self.view.frame = UIScreen.main.bounds
-        }
+            // self.view.center = CGPoint(x: UIScreen.main.bounds.midX, y: UIScreen.main.bounds.midY)
+            // let scalingX = UIScreen.main.bounds.width / self.view.frame.width
+            // let scalingY = UIScreen.main.bounds.height / self.view.frame.height
+            // self.view.transform = CGAffineTransform(scaleX: scalingX, y: scalingY)
+            self.view.layoutSubviews()
+        }, completion: nil)
     }
+    
     
     /// Undo the current full screen, if any.
     ///
@@ -188,10 +199,12 @@ import Swifty360Player
     ///   - duration: Total duration of the animations, measured in seconds.
     ///               When `animated` is false, this value defaults to 0.0.
     @objc public func undoFullScreen(animated: Bool, duration: Double) {
-        let _duration = animated ? duration : 0.0
-        UIView.animate(withDuration: _duration) {
+        UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            // self.view.transform = CGAffineTransform.identity
+            // self.view.center = self.videoPlayerViewCenter
             self.view.frame = self.videoFrame
-        }
+            self.view.layoutSubviews()
+        }, completion: nil)
     }
 }
 
